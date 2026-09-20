@@ -1,57 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Projects - Jann Arpon</title>
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+    <title>Projects - Student Profile</title>
+    <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
-  <header>
-    <div class="nav-container">
-      <a href="index.html" class="logo">Jann Arpon</a>
-      <nav>
-        <ul>
-          <li><a href="index.html">Profile</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="skills.html">Skills</a></li>
-          <li><a href="projects.html" class="active">Projects</a></li>
-          <li><a href="contact.html">Contact</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+    <header class="app-header">
+        <h1>Student Profile App</h1>
+        <nav class="nav-bar">
+            <a href="index.html" class="nav-btn">Profile</a>
+            <a href="about.html" class="nav-btn">About</a>
+            <a href="skills.html" class="nav-btn">Skills</a>
+            <a href="projects.html" class="nav-btn active">Projects</a>
+            <a href="contact.html" class="nav-btn">Contact</a>
+        </nav>
+    </header>
 
-  <main>
-    <section class="card">
-      <h1>My Projects</h1>
-      <div class="grid-container">
-        <div class="project-card">
-          <h3>1. Cordova Student Profile App</h3>
-          <p>A multi-page responsive hybrid mobile profile application created with Apache Cordova.</p>
-          <p><strong>My Role:</strong> Lead Developer</p>
-          <p><strong>Tools:</strong> <span class="tech-tag">HTML5</span><span class="tech-tag">CSS3</span><span class="tech-tag">Cordova</span></p>
-        </div>
+    <main class="container">
+        <section class="card">
+            <h2 class="section-title">Projects</h2>
+            <hr class="section-divider">
+            
+            <div id="projects-container" class="cards-grid"></div>
 
-        <div class="project-card">
-          <h3>2. Responsive Student Portfolio</h3>
-          <p>A single-page adaptive portfolio site showcasing skills, background, and academic work.</p>
-          <p><strong>My Role:</strong> Frontend Developer & UI Designer</p>
-          <p><strong>Tools:</strong> <span class="tech-tag">HTML</span><span class="tech-tag">CSS</span><span class="tech-tag">Flexbox</span></p>
-        </div>
+            <div class="action-group">
+                <button class="btn btn-success" onclick="openAddProjectForm()">+ Add Project</button>
+            </div>
+        </section>
+    </main>
 
-        <div class="project-card">
-          <h3>3. Task Management App Wireframe</h3>
-          <p>A prototype layout for managing daily student tasks and schedule reminders.</p>
-          <p><strong>My Role:</strong> Developer & UI Designer</p>
-          <p><strong>Tools:</strong> <span class="tech-tag">HTML</span><span class="tech-tag">CSS Grid</span></p>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <p>&copy; 2026 Jann Arpon. All Rights Reserved.</p>
-  </footer>
+    <script src="cordova.js"></script>
+    <script src="js/index.js"></script>
 </body>
 </html>

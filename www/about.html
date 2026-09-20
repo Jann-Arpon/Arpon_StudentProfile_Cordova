@@ -1,51 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About Me - Jann Arpon</title>
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+    <title>About Me - Student Profile</title>
+    <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
-  <header>
-    <div class="nav-container">
-      <a href="index.html" class="logo">Jann Arpon</a>
-      <nav>
-        <ul>
-          <li><a href="index.html">Profile</a></li>
-          <li><a href="about.html" class="active">About</a></li>
-          <li><a href="skills.html">Skills</a></li>
-          <li><a href="projects.html">Projects</a></li>
-          <li><a href="contact.html">Contact</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+    <header class="app-header">
+        <h1>Student Profile App</h1>
+        <nav class="nav-bar">
+            <a href="index.html" class="nav-btn">Profile</a>
+            <a href="about.html" class="nav-btn active">About</a>
+            <a href="skills.html" class="nav-btn">Skills</a>
+            <a href="projects.html" class="nav-btn">Projects</a>
+            <a href="contact.html" class="nav-btn">Contact</a>
+        </nav>
+    </header>
 
-  <main>
-    <section class="card">
-      <h1>About Me</h1>
-      <p>Hello! I am Jann Arpon, an Information Technology student passionate about software engineering and mobile app development.</p>
-      <br>
-      <p>I focus on learning modern web technologies and cross-platform mobile frameworks like Apache Cordova to build responsive applications.</p>
+    <main class="container">
+        <section class="card">
+            <h2 class="section-title">About Me</h2>
+            <hr class="section-divider">
+            <p id="display-about-bio" class="section-content">Hello! I am Jann Arpon, an Information Technology student passionate about software engineering and mobile app development.</p>
 
-      <h2 style="margin-top: 25px;">Educational Background</h2>
-      <p><strong>Bachelor of Science in Information Technology</strong></p>
+            <h3 class="sub-heading">Educational Background</h3>
+            <p id="display-about-edu" class="section-content">Bachelor of Science in Information Technology</p>
 
-      <h2 style="margin-top: 25px;">Interests & Hobbies</h2>
-      <ul>
-        <li>Coding & Mobile App Prototyping</li>
-        <li>Exploring Open-Source Projects</li>
-        <li>UI/UX Wireframing</li>
-      </ul>
+            <h3 class="sub-heading">Goals & Aspirations</h3>
+            <p id="display-about-goals" class="section-content">My goal is to graduate as a full-stack mobile developer and build efficient applications used globally.</p>
 
-      <h2 style="margin-top: 25px;">Goals & Aspirations</h2>
-      <p>My goal is to graduate as a full-stack mobile developer and build efficient applications used globally.</p>
-    </section>
-  </main>
+            <button class="btn btn-primary" style="margin-top: 20px;" onclick="openEditSection('about')">Edit Bio & Goals</button>
+        </section>
+    </main>
 
-  <footer>
-    <p>&copy; 2026 Jann Arpon. All Rights Reserved.</p>
-  </footer>
+    <script src="cordova.js"></script>
+    <script src="js/index.js"></script>
 </body>
 </html>
