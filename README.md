@@ -36,9 +36,10 @@ Uses browser `localStorage` to save profile details as serialized JSON objects. 
 ## 7. How to Run
 
 1. **Clone the repository:**
-   ```bash
    git clone [https://github.com/Jann-Arpon/Arpon_StudentProfile_Cordova.git](https://github.com/Jann-Arpon/Arpon_StudentProfile_Cordova.git)
    cd Arpon_StudentProfile_Cordova
+2. cordova platform add browser
+3. cordova run browser
 
 ## 8. Application Screenshots 
 
