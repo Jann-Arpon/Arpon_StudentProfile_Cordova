@@ -1,38 +1,283 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jann Arpon - Profile</title>
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+    <title>Student Profile</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header>
-    <div class="nav-container">
-      <a href="index.html" class="logo">Jann Arpon</a>
-      <nav>
-        <ul>
-          <li><a href="index.html" class="active">Profile</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="skills.html">Skills</a></li>
-          <li><a href="projects.html">Projects</a></li>
-          <li><a href="contact.html">Contact</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+    <header class="app-header">
+        <h1>Student Profile App</h1>
+        <nav class="nav-bar">
+            <button class="nav-btn active" id="nav-profile" onclick="switchPage('profile')">Profile</button>
+            <button class="nav-btn" id="nav-about" onclick="switchPage('about')">About</button>
+            <button class="nav-btn" id="nav-skills" onclick="switchPage('skills')">Skills</button>
+            <button class="nav-btn" id="nav-projects" onclick="switchPage('projects')">Projects</button>
+            <button class="nav-btn" id="nav-contact" onclick="switchPage('contact')">Contact</button>
+        </nav>
+    </header>
 
-  <main>
-    <section class="card hero-section">
-      <img src="img/profile.jpeg" alt="Jann Arpon Profile Picture" class="profile-img">
-      <h1>Jann Arpon</h1>
-      <p class="tagline">Aspiring Mobile & Web Developer</p>
-      <p>Welcome to my mobile application student profile. Explore the sections above to learn more about my background, skills, and projects.</p>
-    </section>
-  </main>
+    <main class="container">
+        <section id="page-profile" class="page-section card active">
+            <div class="profile-header">
+                <img id="profile-pic" src="img/profile.jpeg" alt="Profile Picture" class="avatar">
+                <h2 id="display-name">Jann Arpon</h2>
+                <p class="badge" id="display-course">BS Information Technology</p>
+                <p class="sub-text" id="display-year">3rd year</p>
+                <div style="margin-top: 12px;">
+                    <h3 class="clickable-title" onclick="switchPage('contact')">Contact Info</h3>
+                </div>
+            </div>
 
-  <footer>
-    <p>&copy; 2026 Jann Arpon. All Rights Reserved.</p>
-  </footer>
+            <div class="preview-box">
+                <h3 class="clickable-title" onclick="switchPage('about')">About Me</h3>
+                <p id="display-about-preview" class="preview-text">Hello! I am Jann Arpon, an Information Technology student passionate about software engineering and mobile app development.</p>
+            </div>
+
+            <div class="preview-box">
+                <h3 class="clickable-title" onclick="switchPage('skills')">Skills Summary</h3>
+                <p id="display-skills-preview" class="preview-text">HTML5, CSS3, JavaScript, Cordova</p>
+            </div>
+
+            <div class="preview-box">
+                <h3 class="clickable-title" onclick="switchPage('projects')">Projects Summary</h3>
+                <p id="display-projects-preview" class="preview-text">Cordova Student Profile App, Responsive Student Portfolio</p>
+            </div>
+
+            <button class="btn btn-primary" onclick="openEditSection('profile')">Edit Profile Info</button>
+        </section>
+
+        <section id="page-about" class="page-section card">
+            <h2 class="section-title">About Me</h2>
+            <hr class="section-divider">
+            <p id="display-about-bio" class="section-content">Hello! I am Jann Arpon, an Information Technology student passionate about software engineering and mobile app development.</p>
+
+            <h3 class="sub-heading">Educational Background</h3>
+            <p id="display-about-edu" class="section-content">Bachelor of Science in Information Technology</p>
+
+            <h3 class="sub-heading">Goals & Aspirations</h3>
+            <p id="display-about-goals" class="section-content">My goal is to graduate as a full-stack mobile developer and build efficient applications used globally.</p>
+
+            <button class="btn btn-primary" style="margin-top: 20px;" onclick="openEditSection('about')">Edit Bio & Goals</button>
+        </section>
+
+        <section id="page-skills" class="page-section card">
+            <h2 class="section-title">Skills</h2>
+            <hr class="section-divider">
+            <div id="skills-container" class="cards-grid"></div>
+            <div class="action-group">
+                <button class="btn btn-success" onclick="openAddSkillForm()">+ Add Skill</button>
+            </div>
+        </section>
+
+        <section id="page-projects" class="page-section card">
+            <h2 class="section-title">Projects</h2>
+            <hr class="section-divider">
+            <div id="projects-container" class="cards-grid"></div>
+            <div class="action-group">
+                <button class="btn btn-success" onclick="openAddProjectForm()">+ Add Project</button>
+            </div>
+        </section>
+
+        <section id="page-contact" class="page-section card">
+            <h2 class="section-title">Contact Details</h2>
+            <hr class="section-divider">
+            <ul class="detail-list contact-list">
+                <li><strong>Email:</strong> <span id="display-contact-email">jannarpon@gmail.com</span></li>
+                <li><strong>GitHub:</strong> <a href="https://github.com/Jann-Arpon" target="_blank" id="display-contact-github">github.com/Jann-Arpon</a></li>
+                <li><strong>Social Media:</strong> <a href="https://www.facebook.com/jann.arpon" target="_blank" id="display-contact-facebook">https://www.facebook.com/jann.arpon</a></li>
+                <li><strong>Phone:</strong> <span id="display-contact-phone">09457542756</span></li>
+                <li><strong>Location:</strong> <span id="display-contact-location">Philippines</span></li>
+            </ul>
+            <button class="btn btn-primary" style="margin-top: 20px;" onclick="openEditSection('contact')">Edit Contact Info</button>
+        </section>
+
+        <section id="edit-form-profile" class="page-section card">
+            <h2 class="section-title">Edit Profile Info</h2>
+            <hr class="section-divider">
+            <form onsubmit="event.preventDefault(); saveProfileInfo();">
+                <div class="form-group">
+                    <label for="edit-name">Full Name *</label>
+                    <input type="text" id="edit-name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-course">Course / Program *</label>
+                    <input type="text" id="edit-course" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-year">Year Level *</label>
+                    <input type="text" id="edit-year" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-about-preview-input">About Me *</label>
+                    <textarea id="edit-about-preview-input" class="form-control" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="edit-skills-preview-input">Skills Summary</label>
+                    <textarea id="edit-skills-preview-input" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="edit-projects-preview-input">Projects Summary</label>
+                    <textarea id="edit-projects-preview-input" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="btn btn-success">Save Profile</button>
+                    <button type="button" class="btn btn-secondary" onclick="switchPage('profile')">Cancel</button>
+                </div>
+            </form>
+        </section>
+
+        <section id="edit-form-about" class="page-section card">
+            <h2 class="section-title">Edit About Section</h2>
+            <hr class="section-divider">
+            <form onsubmit="event.preventDefault(); saveAboutInfo();">
+                <div class="form-group">
+                    <label for="edit-about-bio">Bio / Summary *</label>
+                    <textarea id="edit-about-bio" class="form-control" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="edit-about-edu">Educational Background</label>
+                    <input type="text" id="edit-about-edu" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="edit-about-goals">Goals & Aspirations</label>
+                    <textarea id="edit-about-goals" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="btn btn-success">Save About Info</button>
+                    <button type="button" class="btn btn-secondary" onclick="switchPage('about')">Cancel</button>
+                </div>
+            </form>
+        </section>
+
+        <section id="edit-form-single-skill" class="page-section card">
+            <h2 class="section-title">Edit Skill</h2>
+            <hr class="section-divider">
+            <form onsubmit="event.preventDefault(); saveSingleSkill();">
+                <div class="form-group">
+                    <label for="edit-single-skill-title">Skill Title *</label>
+                    <input type="text" id="edit-single-skill-title" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-single-skill-category">Category / Tag</label>
+                    <input type="text" id="edit-single-skill-category" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="edit-single-skill-desc">Description</label>
+                    <textarea id="edit-single-skill-desc" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteSingleSkill()">Delete Skill</button>
+                    <button type="button" class="btn btn-secondary" onclick="switchPage('skills')">Cancel</button>
+                </div>
+            </form>
+        </section>
+
+        <section id="edit-form-add-skill" class="page-section card">
+            <h2 class="section-title">Add New Skill</h2>
+            <hr class="section-divider">
+            <form onsubmit="event.preventDefault(); saveNewSkill();">
+                <div class="form-group">
+                    <label for="add-skill-title">Skill Title *</label>
+                    <input type="text" id="add-skill-title" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="add-skill-category">Category / Tag</label>
+                    <input type="text" id="add-skill-category" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="add-skill-desc">Description</label>
+                    <textarea id="add-skill-desc" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="btn btn-success">Add Skill</button>
+                    <button type="button" class="btn btn-secondary" onclick="switchPage('skills')">Cancel</button>
+                </div>
+            </form>
+        </section>
+
+        <section id="edit-form-single-project" class="page-section card">
+            <h2 class="section-title">Edit Project</h2>
+            <hr class="section-divider">
+            <form onsubmit="event.preventDefault(); saveSingleProject();">
+                <div class="form-group">
+                    <label for="edit-single-proj-title">Project Title *</label>
+                    <input type="text" id="edit-single-proj-title" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-single-proj-role">Your Role</label>
+                    <input type="text" id="edit-single-proj-role" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="edit-single-proj-desc">Description</label>
+                    <textarea id="edit-single-proj-desc" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteSingleProject()">Delete Project</button>
+                    <button type="button" class="btn btn-secondary" onclick="switchPage('projects')">Cancel</button>
+                </div>
+            </form>
+        </section>
+
+        <section id="edit-form-add-project" class="page-section card">
+            <h2 class="section-title">Add New Project</h2>
+            <hr class="section-divider">
+            <form onsubmit="event.preventDefault(); saveNewProject();">
+                <div class="form-group">
+                    <label for="add-proj-title">Project Title *</label>
+                    <input type="text" id="add-proj-title" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="add-proj-role">Your Role</label>
+                    <input type="text" id="add-proj-role" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="add-proj-desc">Description</label>
+                    <textarea id="add-proj-desc" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="btn btn-success">Add Project</button>
+                    <button type="button" class="btn btn-secondary" onclick="switchPage('projects')">Cancel</button>
+                </div>
+            </form>
+        </section>
+
+        <section id="edit-form-contact" class="page-section card">
+            <h2 class="section-title">Edit Contact Details</h2>
+            <hr class="section-divider">
+            <form onsubmit="event.preventDefault(); saveContactInfo();">
+                <div class="form-group">
+                    <label for="edit-contact-email">Email Address</label>
+                    <input type="email" id="edit-contact-email" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="edit-contact-github">GitHub Handle / URL</label>
+                    <input type="text" id="edit-contact-github" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="edit-contact-facebook">Social Media URL</label>
+                    <input type="text" id="edit-contact-facebook" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="edit-contact-phone">Phone Number</label>
+                    <input type="text" id="edit-contact-phone" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="edit-contact-location">Location</label>
+                    <input type="text" id="edit-contact-location" class="form-control">
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="btn btn-success">Save Contact Info</button>
+                    <button type="button" class="btn btn-secondary" onclick="switchPage('contact')">Cancel</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <script src="cordova.js"></script>
+    <script src="js/index.js"></script>
 </body>
 </html>
