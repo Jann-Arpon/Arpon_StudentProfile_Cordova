@@ -1,37 +1,64 @@
-﻿# Activity 4 - Student Profile App
+# Student Profile Application
 
-**Name:** Jann Arpon  
-**Course:** BS Information Technology  
+## 1. Project Description
+A hybrid mobile application built with Apache Cordova, HTML, CSS, and JavaScript that serves as an interactive student portfolio with persistent profile editing capabilities.
 
-## Description
-This is my submission for Activity 4. It is a multi-page mobile profile app built with Apache Cordova using standard HTML and CSS.
+## 2. Application Pages
+* **Profile:** Displays core student information, avatar, and navigation overview.
+* **About:** Contains personal biography, educational background, and development goals.
+* **Skills:** Highlights technical skills and programming competencies.
+* **Projects:** Showcases completed software projects with descriptions and roles.
+* **Contact:** Displays contact details, GitHub links, and social profiles.
 
-## App Pages
-**index.html** - Home page with my profile picture and a brief overview.
+## 3. Profile Editing
+The Edit Profile functionality enables users to dynamically update profile details via an inline form.
+* **Modifiable Information:** Full Name, Course/Program, Year Level, About Me bio, Skills summary, and Projects summary.
 
-<img width="350" height="395" alt="image" src="https://github.com/user-attachments/assets/76c2a35b-184f-419f-ab86-5e83e3c3dfa9" />
 
-**about.html** - Details about my background, education, and goals.
+## 4. JavaScript Functionality
+* **Form Handling:** Intercepts form submission via `preventDefault()` to handle data asynchronously without reloading.
+* **Validation:** Checks that required input fields are filled out before allowing submission.
+* **Profile Updates:** Re-renders DOM elements in real-time with updated user data.
+* **Save:** Writes updated inputs into `localStorage` and updates the active view.
+* **Cancel:** Discards pending changes and returns to the profile view.
 
-<img width="364" height="400" alt="image" src="https://github.com/user-attachments/assets/29e5792c-bed3-4e26-9cb1-494183c069a2" />
 
-**skills.html** - List of my tech skills and tools.
+## 5. Local Data Storage
+Uses browser `localStorage` to save profile details as serialized JSON objects. Data automatically loads on application launch (`deviceready` / `DOMContentLoaded`), ensuring edits persist across app restarts.
 
-<img width="354" height="404" alt="image" src="https://github.com/user-attachments/assets/58456d09-b7d5-499f-bc39-4c6b31131ea9" />
 
-**projects.html** - A list of sample projects I have built.
+## 6. Responsive Design
+* **Desktop:** Utilizes multi-column grid layouts and expanded navigation bars.
+* **Tablet:** Rearranges elements into flexible 2-column viewports.
+* **Mobile:** Stacks content into single-column touch-friendly cards.
 
-<img width="359" height="424" alt="image" src="https://github.com/user-attachments/assets/36afd68d-d476-4750-96fe-ec7a31b25eda" />
 
-**contact.html** - My contact details and a message form.
+## 7. How to Run
 
-<img width="389" height="435" alt="image" src="https://github.com/user-attachments/assets/11db9a3b-1146-4dff-81af-f599c8d89009" />
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/Jann-Arpon/Arpon_StudentProfile_Cordova.git](https://github.com/Jann-Arpon/Arpon_StudentProfile_Cordova.git)
+   cd Arpon_StudentProfile_Cordova
 
-## Design Notes
-* Styled using a single stylesheet (`css/style.css`) to make the page fit nicely on both phones and computers.
-* Switching pages is done using standard HTML links (`<a>` tags).
+## 8. Application Screenshots 
 
-## How to Run
-1. Open PowerShell in the project folder.
-2. Type `cordova platform add browser` if you haven't added it yet.
-3. Type `cordova run browser` to test the app in your browser.
+**Student Profile**
+
+Before
+
+<img width="500" height="500" alt="image" src="https://github.com/user-attachments/assets/5020e774-3143-4dec-b8ee-2ad6bea147c9" />  <img width="500" height="500" alt="image" src="https://github.com/user-attachments/assets/6891da13-4a96-471d-8cb9-deb3878d491c" />
+
+After
+
+<img width="500" height="500" alt="image" src="https://github.com/user-attachments/assets/1e1a94c8-3eea-4369-bdee-cceac373b456" />  <img width="500" height="500" alt="image" src="https://github.com/user-attachments/assets/3a47dcbf-d6dd-4613-87e3-0e27f1303fa9" />
+
+**Contact**
+
+Before
+
+<img width="500" height="500" alt="image" src="https://github.com/user-attachments/assets/0f026c20-b581-4f60-869a-e9e38933eb44" />  <img width="500" height="500" alt="image" src="https://github.com/user-attachments/assets/4028d497-b75b-459d-a21d-4902e92c006a" />
+
+After
+
+<img width="500" height="500" alt="image" src="https://github.com/user-attachments/assets/0f2533e3-79ca-4439-8e10-0855312ade4a" />  <img width="500" height="500" alt="image" src="https://github.com/user-attachments/assets/520620da-c27f-446c-9751-37aaa2966d3c" />
+
