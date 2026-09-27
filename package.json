@@ -16,6 +16,9 @@
     "cordova-browser": "^7.0.0"
   },
   "cordova": {
+    "plugins": {
+      "cordova-plugin-camera": "8.0.0"
+    },
     "platforms": [
       "browser"
     ]
