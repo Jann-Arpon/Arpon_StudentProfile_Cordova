@@ -330,3 +330,43 @@ body {
     gap: 10px;
     margin-top: 15px;
 }
+
+.profile-pic-interactive {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.profile-pic-interactive:hover,
+.profile-pic-interactive:focus {
+    transform: scale(1.03);
+    box-shadow: 0 0 0 3px #7dd3fc;
+    outline: none;
+}
+
+.profile-picture-btn {
+    max-width: 260px;
+    margin: 4px auto 8px auto;
+}
+
+.camera-status {
+    min-height: 1.2em;
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 6px;
+}
+
+.profile-picture-btn:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
+@media (max-width: 480px) {
+    .profile-picture-btn {
+        max-width: none;
+    }
+
+    .avatar {
+        width: 110px;
+        height: 110px;
+    }
+}
