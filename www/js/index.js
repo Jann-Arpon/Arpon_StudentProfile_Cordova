@@ -18,6 +18,9 @@ const DEFAULT_CONTACT = {
     location: 'Philippines'
 };
 
+const PROFILE_PICTURE_STORAGE_KEY = 'studentProfilePicture';
+const DEFAULT_PROFILE_PICTURE = 'img/profile.jpeg';
+
 let skillsData = [
     { id: 1, title: 'HTML5 & CSS3', category: 'Web Development', desc: 'Building responsive, modern web layouts using CSS Grid and Flexbox.' },
     { id: 2, title: 'JavaScript (ES6+)', category: 'Programming', desc: 'Core programming skills including DOM manipulation and async logic.' },
@@ -31,6 +34,8 @@ let projectsData = [
 
 let editingSkillId = null;
 let editingProjectId = null;
+let cameraRequestInProgress = false;
+let cameraObserver = null;
 
 function onDeviceReady() {
     initApp();
@@ -43,8 +48,172 @@ document.addEventListener('DOMContentLoaded', () => {
 function initApp() {
     loadProfile();
     loadContact();
+    loadProfilePicture();
     renderSkills();
     renderProjects();
+}
+
+function loadProfilePicture() {
+    const savedPicture = localStorage.getItem(PROFILE_PICTURE_STORAGE_KEY);
+    const profilePicture = savedPicture || DEFAULT_PROFILE_PICTURE;
+    const image = document.getElementById('profile-pic');
+
+    if (image) {
+        image.src = profilePicture;
+    }
+}
+
+function handleProfilePictureKey(event) {
+    if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        captureProfilePicture();
+    }
+}
+
+function captureProfilePicture() {
+    if (cameraRequestInProgress) return;
+
+    if (!navigator.camera || typeof navigator.camera.getPicture !== 'function') {
+        showCameraStatus('Camera is unavailable. Please run the app on a Cordova device or emulator.');
+        alert('Camera is unavailable. Please run the app on a Cordova device or emulator.');
+        return;
+    }
+
+    const image = document.getElementById('profile-pic');
+    const previousPicture = image ? image.src : DEFAULT_PROFILE_PICTURE;
+
+    cameraRequestInProgress = true;
+    showCameraStatus('Opening camera...');
+
+    startCameraExitButton();
+
+    const options = {
+        quality: 60,
+        destinationType: navigator.camera.DestinationType.DATA_URL,
+        sourceType: navigator.camera.PictureSourceType.CAMERA,
+        encodingType: navigator.camera.EncodingType.JPEG,
+        mediaType: navigator.camera.MediaType.PICTURE,
+        allowEdit: false,
+        correctOrientation: true,
+        targetWidth: 480,
+        targetHeight: 480,
+        saveToPhotoAlbum: false
+    };
+
+    navigator.camera.getPicture(
+        function(imageData) {
+            stopCameraObserver();
+
+            const dataUrl = imageData.indexOf('data:image') === 0
+                ? imageData
+                : 'data:image/jpeg;base64,' + imageData;
+
+            try {
+                localStorage.setItem(PROFILE_PICTURE_STORAGE_KEY, dataUrl);
+
+                if (image) {
+                    image.src = dataUrl;
+                }
+
+                showCameraStatus('Profile picture updated and saved.');
+            } catch (error) {
+                if (image) {
+                    image.src = previousPicture;
+                }
+
+                showCameraStatus('Photo captured, but it could not be saved.');
+                alert('The photo was captured, but the application could not save it.');
+            }
+
+            cameraRequestInProgress = false;
+        },
+        function(error) {
+            stopCameraObserver();
+
+            if (image) {
+                image.src = previousPicture;
+            }
+
+            const cancelled =
+                error === 'No Image Selected' ||
+                error === 'Selection cancelled.' ||
+                (typeof error === 'string' && /cancel|abort|no image/i.test(error));
+
+            if (cancelled) {
+                showCameraStatus('Camera cancelled. Your previous profile picture was kept.');
+            } else {
+                showCameraStatus('Camera error. Please check camera permissions.');
+                alert('Unable to access the camera. Please check camera permissions and try again.');
+            }
+
+            cameraRequestInProgress = false;
+        },
+        options
+    );
+}
+
+function startCameraExitButton() {
+    stopCameraObserver();
+
+    cameraObserver = new MutationObserver(() => {
+        addExitButtonIfCameraExists();
+    });
+
+    cameraObserver.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+    addExitButtonIfCameraExists();
+}
+
+function addExitButtonIfCameraExists() {
+    const cameraContainer = document.querySelector('.cordova-camera-capture');
+
+    if (!cameraContainer) return;
+    if (cameraContainer.querySelector('.camera-exit-button')) return;
+
+    const exitButton = document.createElement('button');
+    exitButton.type = 'button';
+    exitButton.className = 'camera-exit-button';
+    exitButton.innerText = 'Exit';
+    exitButton.addEventListener('click', exitCameraCapture);
+
+    cameraContainer.appendChild(exitButton);
+}
+
+function exitCameraCapture() {
+    const cameraContainer = document.querySelector('.cordova-camera-capture');
+
+    if (cameraContainer) {
+        const video = cameraContainer.querySelector('video');
+
+        if (video && video.srcObject) {
+            video.srcObject.getTracks().forEach(track => track.stop());
+            video.srcObject = null;
+        }
+
+        cameraContainer.remove();
+    }
+
+    stopCameraObserver();
+    cameraRequestInProgress = false;
+    showCameraStatus('Camera cancelled. Your previous profile picture was kept.');
+}
+
+function stopCameraObserver() {
+    if (cameraObserver) {
+        cameraObserver.disconnect();
+        cameraObserver = null;
+    }
+}
+
+function showCameraStatus(message) {
+    const status = document.getElementById('camera-status');
+
+    if (status) {
+        status.innerText = message;
+    }
 }
 
 function loadProfile() {
@@ -79,14 +248,17 @@ function loadContact() {
     const elLoc = document.getElementById('display-contact-location');
 
     if (elEmail) elEmail.innerText = contact.email;
+
     if (elGithub) {
         elGithub.innerText = contact.github;
         elGithub.href = contact.githubUrl || contact.github;
     }
+
     if (elFb) {
         elFb.innerText = contact.facebook;
         elFb.href = contact.facebook;
     }
+
     if (elPhone) elPhone.innerText = contact.phone;
     if (elLoc) elLoc.innerText = contact.location;
 }
@@ -105,17 +277,17 @@ function openEditSection(section) {
         document.getElementById('edit-skills-preview-input').value = profile.skillsPreview;
         document.getElementById('edit-projects-preview-input').value = profile.projectsPreview;
         document.getElementById('edit-form-profile').classList.add('active');
-    } 
-    else if (section === 'about') {
+    } else if (section === 'about') {
         const savedProfile = localStorage.getItem('studentProfile');
         const profile = savedProfile ? JSON.parse(savedProfile) : DEFAULT_PROFILE;
 
         document.getElementById('edit-about-bio').value = profile.aboutPreview;
-        document.getElementById('edit-about-edu').value = document.getElementById('display-about-edu')?.innerText || profile.course;
-        document.getElementById('edit-about-goals').value = document.getElementById('display-about-goals')?.innerText || '';
+        document.getElementById('edit-about-edu').value =
+            document.getElementById('display-about-edu')?.innerText || profile.course;
+        document.getElementById('edit-about-goals').value =
+            document.getElementById('display-about-goals')?.innerText || '';
         document.getElementById('edit-form-about').classList.add('active');
-    } 
-    else if (section === 'contact') {
+    } else if (section === 'contact') {
         const savedContact = localStorage.getItem('studentContact');
         const contact = savedContact ? JSON.parse(savedContact) : DEFAULT_CONTACT;
 
@@ -140,14 +312,17 @@ function saveProfileInfo() {
         alert('Please enter your full name.');
         return;
     }
+
     if (!course) {
         alert('Please enter your course/program.');
         return;
     }
+
     if (!year) {
         alert('Please enter your year level.');
         return;
     }
+
     if (!aboutPrev) {
         alert('Please enter your About Me description.');
         return;
@@ -163,13 +338,13 @@ function saveProfileInfo() {
     };
 
     localStorage.setItem('studentProfile', JSON.stringify(updatedProfile));
-
     loadProfile();
     switchPage('profile');
 }
 
 function saveAboutInfo() {
     const bioText = document.getElementById('edit-about-bio').value.trim();
+
     if (!bioText) {
         alert('About Me cannot be empty.');
         return;
@@ -177,14 +352,21 @@ function saveAboutInfo() {
 
     const savedProfile = localStorage.getItem('studentProfile');
     const profile = savedProfile ? JSON.parse(savedProfile) : DEFAULT_PROFILE;
+
     profile.aboutPreview = bioText;
 
     localStorage.setItem('studentProfile', JSON.stringify(profile));
 
     const edu = document.getElementById('edit-about-edu').value.trim();
     const goals = document.getElementById('edit-about-goals').value.trim();
-    if (document.getElementById('display-about-edu')) document.getElementById('display-about-edu').innerText = edu;
-    if (document.getElementById('display-about-goals')) document.getElementById('display-about-goals').innerText = goals;
+
+    if (document.getElementById('display-about-edu')) {
+        document.getElementById('display-about-edu').innerText = edu;
+    }
+
+    if (document.getElementById('display-about-goals')) {
+        document.getElementById('display-about-goals').innerText = goals;
+    }
 
     loadProfile();
     switchPage('about');
@@ -218,9 +400,11 @@ function hideAllPages() {
 
 function renderSkills() {
     const container = document.getElementById('skills-container');
+
     if (!container) return;
 
     container.innerHTML = '';
+
     skillsData.forEach(skill => {
         const card = document.createElement('div');
         card.className = 'info-card';
@@ -238,9 +422,11 @@ function renderSkills() {
 
 function renderProjects() {
     const container = document.getElementById('projects-container');
+
     if (!container) return;
 
     container.innerHTML = '';
+
     projectsData.forEach(project => {
         const card = document.createElement('div');
         card.className = 'info-card';
@@ -258,10 +444,12 @@ function renderProjects() {
 
 function openEditSingleSkill(id) {
     const skill = skillsData.find(s => s.id === id);
+
     if (!skill) return;
 
     editingSkillId = id;
     hideAllPages();
+
     document.getElementById('edit-single-skill-title').value = skill.title;
     document.getElementById('edit-single-skill-category').value = skill.category;
     document.getElementById('edit-single-skill-desc').value = skill.desc;
@@ -270,6 +458,7 @@ function openEditSingleSkill(id) {
 
 function saveSingleSkill() {
     const title = document.getElementById('edit-single-skill-title').value.trim();
+
     if (!title) {
         alert('Skill Title cannot be empty.');
         return;
@@ -279,6 +468,7 @@ function saveSingleSkill() {
     const desc = document.getElementById('edit-single-skill-desc').value.trim();
 
     const index = skillsData.findIndex(s => s.id === editingSkillId);
+
     if (index !== -1) {
         skillsData[index].title = title;
         skillsData[index].category = category || 'General';
@@ -299,6 +489,7 @@ function deleteSingleSkill() {
 
 function openAddSkillForm() {
     hideAllPages();
+
     document.getElementById('add-skill-title').value = '';
     document.getElementById('add-skill-category').value = '';
     document.getElementById('add-skill-desc').value = '';
@@ -307,6 +498,7 @@ function openAddSkillForm() {
 
 function saveNewSkill() {
     const title = document.getElementById('add-skill-title').value.trim();
+
     if (!title) {
         alert('Skill Title cannot be empty.');
         return;
@@ -328,10 +520,12 @@ function saveNewSkill() {
 
 function openEditSingleProject(id) {
     const project = projectsData.find(p => p.id === id);
+
     if (!project) return;
 
     editingProjectId = id;
     hideAllPages();
+
     document.getElementById('edit-single-proj-title').value = project.title;
     document.getElementById('edit-single-proj-role').value = project.role;
     document.getElementById('edit-single-proj-desc').value = project.desc;
@@ -340,6 +534,7 @@ function openEditSingleProject(id) {
 
 function saveSingleProject() {
     const title = document.getElementById('edit-single-proj-title').value.trim();
+
     if (!title) {
         alert('Project Title cannot be empty.');
         return;
@@ -349,6 +544,7 @@ function saveSingleProject() {
     const desc = document.getElementById('edit-single-proj-desc').value.trim();
 
     const index = projectsData.findIndex(p => p.id === editingProjectId);
+
     if (index !== -1) {
         projectsData[index].title = title;
         projectsData[index].role = role || 'Developer';
@@ -369,6 +565,7 @@ function deleteSingleProject() {
 
 function openAddProjectForm() {
     hideAllPages();
+
     document.getElementById('add-proj-title').value = '';
     document.getElementById('add-proj-role').value = '';
     document.getElementById('add-proj-desc').value = '';
@@ -377,6 +574,7 @@ function openAddProjectForm() {
 
 function saveNewProject() {
     const title = document.getElementById('add-proj-title').value.trim();
+
     if (!title) {
         alert('Project Title cannot be empty.');
         return;
@@ -398,6 +596,7 @@ function saveNewProject() {
 
 function switchPage(pageName) {
     const targetPage = document.getElementById('page-' + pageName);
+
     if (targetPage) {
         hideAllPages();
         targetPage.classList.add('active');
@@ -406,6 +605,7 @@ function switchPage(pageName) {
         navButtons.forEach(btn => btn.classList.remove('active'));
 
         const activeNav = document.getElementById('nav-' + pageName);
+
         if (activeNav) {
             activeNav.classList.add('active');
         }
@@ -415,5 +615,10 @@ function switchPage(pageName) {
 }
 
 function escapeHtml(str) {
-    return str ? str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;") : '';
+    return str
+        ? str.replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+        : '';
 }
