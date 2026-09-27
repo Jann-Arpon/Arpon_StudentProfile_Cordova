@@ -32,6 +32,12 @@ let projectsData = [
 let editingSkillId = null;
 let editingProjectId = null;
 
+
+const PROFILE_PICTURE_STORAGE_KEY = 'studentProfilePicture';
+const DEFAULT_PROFILE_PICTURE = 'img/profile.jpeg';
+let cameraRequestInProgress = false;
+
+
 function onDeviceReady() {
     initApp();
 }
@@ -43,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function initApp() {
     loadProfile();
     loadContact();
+    loadProfilePicture();
     renderSkills();
     renderProjects();
 }
@@ -66,6 +73,104 @@ function loadProfile() {
     if (elAboutBio) elAboutBio.innerText = profile.aboutPreview;
     if (elSkills) elSkills.innerText = profile.skillsPreview;
     if (elProjects) elProjects.innerText = profile.projectsPreview;
+}
+
+function loadProfilePicture() {
+    const savedPicture = localStorage.getItem(PROFILE_PICTURE_STORAGE_KEY);
+    const profilePicture = savedPicture || DEFAULT_PROFILE_PICTURE;
+    const image = document.getElementById('profile-pic');
+
+    if (image) {
+        image.src = profilePicture;
+    }
+}
+
+function handleProfilePictureKey(event) {
+    if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        captureProfilePicture();
+    }
+}
+
+function captureProfilePicture() {
+    if (cameraRequestInProgress) return;
+
+    if (!navigator.camera || typeof navigator.camera.getPicture !== 'function') {
+        showCameraStatus('Camera is unavailable. Run this app on a Cordova device/emulator with the camera plugin installed.');
+        alert('Camera is unavailable. Please run the app on a Cordova device/emulator.');
+        return;
+    }
+
+    const image = document.getElementById('profile-pic');
+    const changeButton = document.getElementById('change-profile-picture-btn');
+    const previousPicture = image ? image.src : DEFAULT_PROFILE_PICTURE;
+
+    cameraRequestInProgress = true;
+    if (changeButton) changeButton.disabled = true;
+    showCameraStatus('Opening camera...');
+
+    const options = {
+        quality: 60,
+        destinationType: navigator.camera.DestinationType.DATA_URL,
+        sourceType: navigator.camera.PictureSourceType.CAMERA,
+        encodingType: navigator.camera.EncodingType.JPEG,
+        mediaType: navigator.camera.MediaType.PICTURE,
+        allowEdit: false,
+        correctOrientation: true,
+        targetWidth: 480,
+        targetHeight: 480,
+        saveToPhotoAlbum: false
+    };
+
+    navigator.camera.getPicture(
+        function onCameraSuccess(imageData) {
+            const dataUrl = imageData.indexOf('data:image') === 0
+                ? imageData
+                : 'data:image/jpeg;base64,' + imageData;
+
+            try {
+                localStorage.setItem(PROFILE_PICTURE_STORAGE_KEY, dataUrl);
+
+                if (image) {
+                    image.src = dataUrl;
+                }
+
+                showCameraStatus('Profile picture updated and saved.');
+            } catch (storageError) {
+                if (image) {
+                    image.src = previousPicture;
+                }
+                showCameraStatus('Photo captured, but it could not be saved to local storage.');
+                alert('The photo was captured, but the application could not save it. Try a smaller image.');
+            }
+        },
+        function onCameraError(error) {
+            const cancelled = error === 'No Image Selected' ||
+                error === 'Selection cancelled.' ||
+                (typeof error === 'string' && /cancel|abort|no image/i.test(error));
+
+            if (image) {
+                image.src = previousPicture;
+            }
+
+            if (cancelled) {
+                showCameraStatus('Camera cancelled. Your existing profile picture was kept.');
+            } else {
+                const message = typeof error === 'string' ? error : 'Unable to access the camera.';
+                showCameraStatus('Camera error: ' + message);
+                alert('Unable to access the camera. Please check camera permissions and try again.');
+            }
+            cameraRequestInProgress = false;
+            if (changeButton) changeButton.disabled = false;
+        }
+    );
+}
+
+function showCameraStatus(message) {
+    const status = document.getElementById('camera-status');
+    if (status) {
+        status.innerText = message;
+    }
 }
 
 function loadContact() {
