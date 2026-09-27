@@ -21,7 +21,9 @@
     <main class="container">
         <section id="page-profile" class="page-section card active">
             <div class="profile-header">
-                <img id="profile-pic" src="img/profile.jpeg" alt="Profile Picture" class="avatar">
+                <img id="profile-pic" src="img/profile.jpeg" alt="Profile Picture" class="avatar profile-pic-interactive" onclick="captureProfilePicture()" onkeydown="handleProfilePictureKey(event)" role="button" tabindex="0" aria-label="Change Profile Picture">
+                <button type="button" class="btn btn-primary profile-picture-btn" id="change-profile-picture-btn" onclick="captureProfilePicture()">Change Profile Picture</button>
+                <p id="camera-status" class="camera-status" role="status" aria-live="polite"></p>
                 <h2 id="display-name">Jann Arpon</h2>
                 <p class="badge" id="display-course">BS Information Technology</p>
                 <p class="sub-text" id="display-year">3rd year</p>
